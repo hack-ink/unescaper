@@ -1,13 +1,21 @@
 [package]
-authors     = ["Xavier Lau <xavier@inv.cafe>"]
-description = "Unescaping the `String` easily"
-edition     = "2021"
-homepage    = "https://unescaper.hack.ink"
-license     = "GPL-3.0"
-name        = "unescaper"
-readme      = "README.md"
-repository  = "https://github.com/hack-ink/unescaper"
-version     = "0.1.0"
+authors = ["Xavier Lau <xavier@inv.cafe>"]
+description = "Unescape strings with escape sequences written out as literal characters."
+edition = "2021"
+homepage = "https://unescaper.hack.ink"
+keywords = [
+	"escape",
+	"unescape",
+	"string",
+]
+license = "GPL-3.0"
+name = "unescaper"
+readme = "README.md"
+repository = "https://github.com/hack-ink/unescaper"
+version = "0.1.1"
+
+[badges]
+maintenance = { status = "actively-developed" }
 
 [dependencies]
 thiserror = { version = "1.0" }

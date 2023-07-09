@@ -13,7 +13,7 @@ pub type Result<T> = ::std::result::Result<T, Error>;
 
 /// Unescaper's `Error`.
 #[allow(missing_docs)]
-#[cfg_attr(test, derive(PartialEq))]
+#[cfg_attr(test, derive(PartialEq, Eq))]
 #[derive(Debug, ThisError)]
 pub enum Error {
 	#[error("incomplete str, break at {0}")]

@@ -2,7 +2,7 @@
 authors = ["Xavier Lau <xavier@inv.cafe>"]
 description = "Unescape strings with escape sequences written out as literal characters."
 edition = "2021"
-homepage = "https://unescaper.hack.ink"
+homepage = "https://hack.ink/unescaper"
 keywords = [
 	"escape",
 	"string",

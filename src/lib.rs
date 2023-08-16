@@ -66,6 +66,7 @@ impl Unescaper {
 				'\'' => '\'',
 				'\"' => '\"',
 				'\\' => '\\',
+				'/' => '/',
 				'u' => self.unescape_unicode_internal().map_err(|e| offset(e, self.chars.len()))?,
 				'x' => self.unescape_byte_internal().map_err(|e| offset(e, self.chars.len()))?,
 				_ => self.unescape_octal_internal(c).map_err(|e| offset(e, self.chars.len()))?,

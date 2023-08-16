@@ -63,10 +63,11 @@ impl Unescaper {
 				'n' => '\n',
 				'r' => '\r',
 				't' => '\t',
-				'\'' => '\'',
-				'\"' => '\"',
-				'\\' => '\\',
-				'/' => '/',
+				// https://github.com/hack-ink/unescaper/pull/10#issuecomment-1676443635
+				//
+				// https://www.ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf
+				// On page 4 it says: "\/ represents the solidus character (U+002F)."
+				'\'' | '\"' | '\\' | '/' => c,
 				'u' => self.unescape_unicode_internal().map_err(|e| offset(e, self.chars.len()))?,
 				'x' => self.unescape_byte_internal().map_err(|e| offset(e, self.chars.len()))?,
 				_ => self.unescape_octal_internal(c).map_err(|e| offset(e, self.chars.len()))?,

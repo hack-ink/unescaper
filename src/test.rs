@@ -76,3 +76,8 @@ fn unescape_octal() {
 	unescape_assert_eq!(r"\377", "\u{00ff}");
 	unescape_assert_eq!(r"\0XavierJane", "\0XavierJane");
 }
+
+#[test]
+fn unescape_others() {
+	unescape_assert_eq!(r"\/", "/");
+}

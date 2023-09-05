@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Fetch latest code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Login
         run: cargo login ${{ secrets.CARGO_REGISTRY_TOKEN }}
       - name: Publish

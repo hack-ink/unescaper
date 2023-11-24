@@ -3,7 +3,8 @@
 # Unescaper
 ### Unescape strings with escape sequences written out as literal characters.
 
-[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Checks](https://github.com/hack-ink/unescaper/actions/workflows/checks.yml/badge.svg?branch=main)](https://github.com/hack-ink/unescaper/actions/workflows/checks.yml)
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/hack-ink/unescaper)](https://github.com/hack-ink/unescaper/tags)
 [![GitHub code lines](https://tokei.rs/b1/github/hack-ink/unescaper)](https://github.com/hack-ink/unescaper)

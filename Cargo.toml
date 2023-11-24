@@ -8,7 +8,7 @@ keywords = [
 	"string",
 	"unescape",
 ]
-license = "GPL-3.0"
+license = "GPL-3.0/MIT"
 name = "unescaper"
 readme = "README.md"
 repository = "https://github.com/hack-ink/unescaper"

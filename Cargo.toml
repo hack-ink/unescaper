@@ -12,7 +12,7 @@ license = "GPL-3.0/MIT"
 name = "unescaper"
 readme = "README.md"
 repository = "https://github.com/hack-ink/unescaper"
-version = "0.1.3"
+version = "0.1.4"
 
 [profile.ci-dev]
 incremental = false
@@ -21,9 +21,6 @@ inherits    = "dev"
 [profile.ci-release]
 inherits = "release"
 lto      = true
-
-[badges]
-maintenance = { status = "actively-developed" }
 
 [dependencies]
 thiserror = { version = "1.0" }

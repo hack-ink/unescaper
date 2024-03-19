@@ -56,6 +56,8 @@ fn unescape_unicode() {
 	unescape_assert_eq!(r"\u{9}", "\t");
 	unescape_assert_eq!(r"\u{a}", "\n");
 	unescape_assert_eq!(r"\u{ffff}", "\u{ffff}");
+	unescape_assert_eq!(r"\u{1F600}", "\u{1F600}");
+	unescape_assert_eq!(r"\u{1F600}", "😀");
 	unescape_assert_eq!(r"\u{0}XavierJane", "\0XavierJane");
 }
 

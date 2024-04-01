@@ -6,8 +6,7 @@
 // crates.io
 use thiserror::Error as ThisError;
 
-#[cfg(test)]
-mod test;
+#[cfg(test)] mod test;
 
 /// Unescaper's `Result`.
 pub type Result<T> = ::std::result::Result<T, Error>;

@@ -1,10 +1,14 @@
 # System
 .DS_Store
 
-# Integrated Development Environment
-.idea
+# Integrated development environment
 .vscode
 
-# Package Manager
+# Package manager
 ## Cargo
 target
+## NPM
+node_modules
+
+# Test data
+tmp

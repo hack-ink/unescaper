@@ -1,11 +1,4 @@
 name: Checks
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
 
 env:
   CACHE_VERSION: 0
@@ -13,9 +6,16 @@ env:
   CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
   CARGO_TERM_COLOR: always
 
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   RUST_BACKTRACE: full
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  merge_group:
 
 jobs:
   cargo-checks:
@@ -37,10 +37,9 @@ jobs:
           key: ${{ matrix.action }}
       - name: Cargo clippy
         if: matrix.action == 'clippy'
-        uses: actions-rs/clippy-check@v1
+        uses: giraffate/clippy-action@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --workspace --all-features --all-targets --locked
+          clippy_flags: --workspace --all-features --all-targets --locked
       - name: Cargo fmt
         if: matrix.action == 'fmt'
         run: |

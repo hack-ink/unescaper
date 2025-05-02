@@ -1,5 +1,5 @@
 [package]
-authors = ["Xavier Lau <xavier@inv.cafe>"]
+authors = ["Hack Ink <hi@hack.ink>", "Xavier Lau <x@acg.box>"]
 description = "Unescape strings with escape sequences written out as literal characters."
 edition = "2021"
 homepage = "https://hack.ink/unescaper"

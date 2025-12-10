@@ -12,7 +12,10 @@ license = "GPL-3.0/MIT"
 name = "unescaper"
 readme = "README.md"
 repository = "https://github.com/hack-ink/unescaper"
-version = "0.1.6"
+version = "0.1.8"
+
+[package.metadata.docs.rs]
+all-features = true
 
 [profile.ci-dev]
 incremental = false

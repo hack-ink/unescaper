@@ -8,7 +8,6 @@ Unescape strings with escape sequences written out as literal characters.
 [![License GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/hack-ink/unescaper)](https://github.com/hack-ink/unescaper/tags)
 [![GitHub last commit](https://img.shields.io/github/last-commit/hack-ink/unescaper?color=red&style=plastic)](https://github.com/hack-ink/unescaper)
-[![GitHub code lines](https://tokei.rs/b1/github/hack-ink/unescaper)](https://github.com/hack-ink/unescaper)
 [![Checks](https://github.com/hack-ink/unescaper/actions/workflows/checks.yml/badge.svg?branch=main)](https://github.com/hack-ink/unescaper/actions/workflows/checks.yml)
 
 </div>
@@ -51,6 +50,8 @@ Thank you for your support!
 We would like to extend our heartfelt gratitude to the following projects and contributors:
 
 - [unescape-rs](https://github.com/saghm/unescape-rs) for the original idea this crate builds on.
+
+---
 
 <div align="right">
 

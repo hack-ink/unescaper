@@ -3,10 +3,7 @@
 //! Unescape the given string.
 //! This is the opposite operation of [`std::ascii::escape_default`].
 
-// crates.io
-use thiserror::Error as ThisError;
-
-#[cfg(test)] mod test;
+use std::num::ParseIntError;
 
 /// Unescaper's `Result`.
 pub type Result<T> = ::std::result::Result<T, Error>;
@@ -14,16 +11,15 @@ pub type Result<T> = ::std::result::Result<T, Error>;
 /// Unescaper's `Error`.
 #[allow(missing_docs)]
 #[cfg_attr(test, derive(PartialEq, Eq))]
-#[derive(Debug, ThisError)]
+#[derive(Debug, thiserror::Error)]
 pub enum Error {
 	#[error("incomplete str, break at {0}")]
 	IncompleteStr(usize),
 	#[error("invalid char, {char:?} break at {pos}")]
 	InvalidChar { char: char, pos: usize },
 	#[error("parse int error, break at {pos}")]
-	ParseIntError { source: ::std::num::ParseIntError, pos: usize },
+	ParseIntError { source: ParseIntError, pos: usize },
 }
-use Error::*;
 
 enum LossyEscape {
 	Escaped { char: char, len: usize },
@@ -46,7 +42,9 @@ impl Unescaper {
 	pub fn unescape(&mut self) -> Result<String> {
 		let chars_count = self.chars.len();
 		let offset = |mut e, remaining_count| {
-			let (IncompleteStr(pos) | InvalidChar { pos, .. } | ParseIntError { pos, .. }) = &mut e;
+			let (Error::IncompleteStr(pos)
+			| Error::InvalidChar { pos, .. }
+			| Error::ParseIntError { pos, .. }) = &mut e;
 
 			*pos += chars_count - remaining_count - 1;
 
@@ -61,7 +59,8 @@ impl Unescaper {
 				continue;
 			}
 
-			let c = self.chars.pop().ok_or(IncompleteStr(chars_count - self.chars.len() - 1))?;
+			let c =
+				self.chars.pop().ok_or(Error::IncompleteStr(chars_count - self.chars.len() - 1))?;
 			let c = match c {
 				'b' => '\u{0008}',
 				'f' => '\u{000c}',
@@ -99,21 +98,20 @@ impl Unescaper {
 
 				unicode.push(n);
 			}
-		}
-		// \u + regex(d{4})
-		else {
+		} else {
 			// [0, 65536), 16^4
 			unicode.push(c);
 
 			for i in 0..3 {
-				let c = self.chars.pop().ok_or(IncompleteStr(i))?;
+				let c = self.chars.pop().ok_or(Error::IncompleteStr(i))?;
 
 				unicode.push(c);
 			}
 		}
 
 		char::from_u32(
-			u32::from_str_radix(&unicode, 16).map_err(|e| ParseIntError { source: e, pos: 0 })?,
+			u32::from_str_radix(&unicode, 16)
+				.map_err(|e| Error::ParseIntError { source: e, pos: 0 })?,
 		)
 		.ok_or(Error::InvalidChar {
 			char: unicode.chars().last().expect("empty unicode will exit earlier; qed"),
@@ -127,12 +125,13 @@ impl Unescaper {
 
 		// [0, 256), 16^2
 		for i in 0..2 {
-			let c = self.chars.pop().ok_or(IncompleteStr(i))?;
+			let c = self.chars.pop().ok_or(Error::IncompleteStr(i))?;
 
 			byte.push(c);
 		}
 
-		Ok(u8::from_str_radix(&byte, 16).map_err(|e| ParseIntError { source: e, pos: 0 })? as _)
+		Ok(u8::from_str_radix(&byte, 16).map_err(|e| Error::ParseIntError { source: e, pos: 0 })?
+			as _)
 	}
 
 	// pub fn unescape_octal(&mut self) -> Result<char> {}
@@ -152,7 +151,6 @@ impl Unescaper {
 			// \ + regex(d{1,3})
 			'0' | '1' | '2' | '3' => {
 				octal.push(c);
-
 				(0..2).for_each(|_| try_push_next(&mut octal));
 			},
 			// \ + regex(d{1,2})
@@ -161,10 +159,11 @@ impl Unescaper {
 
 				try_push_next(&mut octal);
 			},
-			_ => Err(InvalidChar { char: c, pos: 0 })?,
+			_ => Err(Error::InvalidChar { char: c, pos: 0 })?,
 		}
 
-		Ok(u8::from_str_radix(&octal, 8).map_err(|e| ParseIntError { source: e, pos: 0 })? as _)
+		Ok(u8::from_str_radix(&octal, 8).map_err(|e| Error::ParseIntError { source: e, pos: 0 })?
+			as _)
 	}
 }
 
@@ -187,6 +186,7 @@ pub fn unescape_lossy(s: &str) -> String {
 
 		if c != '\\' {
 			unescaped.push(c);
+
 			cursor += c.len_utf8();
 
 			continue;
@@ -195,10 +195,12 @@ pub fn unescape_lossy(s: &str) -> String {
 		match parse_lossy_escape(remaining) {
 			LossyEscape::Escaped { char, len } => {
 				unescaped.push(char);
+
 				cursor += len;
 			},
 			LossyEscape::Literal(len) => {
 				unescaped.push_str(&remaining[..len]);
+
 				cursor += len;
 			},
 		}
@@ -341,10 +343,14 @@ fn parse_lossy_octal_escape(s: &str, marker_pos: usize, marker: char) -> LossyEs
 		}
 
 		octal.push(c);
+
 		end = len + pos + c.len_utf8();
 	}
+
 	len = end;
 
 	u8::from_str_radix(&octal, 8)
 		.map_or(LossyEscape::Literal(len), |byte| LossyEscape::Escaped { char: byte as _, len })
 }
+
+#[cfg(test)] mod test;

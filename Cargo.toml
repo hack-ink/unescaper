@@ -1,7 +1,7 @@
 [package]
 authors = ["Hack Ink <hi@hack.ink>", "Xavier Lau <x@acg.box>"]
 description = "Unescape strings with escape sequences written out as literal characters."
-edition = "2021"
+edition = "2024"
 homepage = "https://hack.ink/unescaper"
 keywords = [
 	"escape",

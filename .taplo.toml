@@ -1,0 +1,73 @@
+exclude = [
+	"**/Makefile.toml",
+	"*.bak",
+	"*.log",
+	"*.tsbuildinfo",
+	".build",
+	".build/**",
+	".codex",
+	".codex/**",
+	".env*",
+	".kube",
+	".kube/**",
+	".next",
+	".next/**",
+	".pnp.*",
+	".pnpm-debug.log*",
+	".pytest_cache",
+	".pytest_cache/**",
+	".ruff_cache",
+	".ruff_cache/**",
+	".turbo",
+	".turbo/**",
+	".venv",
+	".venv/**",
+	".vercel",
+	".vercel/**",
+	".vite",
+	".vite/**",
+	".vscode",
+	".vscode/**",
+	".workspaces",
+	".workspaces/**",
+	".worktrees",
+	".worktrees/**",
+	".zed",
+	".zed/**",
+	"Makefile.toml",
+	"__pycache__",
+	"__pycache__/**",
+	"build",
+	"build/**",
+	"coverage",
+	"coverage/**",
+	"dist",
+	"dist/**",
+	"model",
+	"model/**",
+	"node_modules",
+	"node_modules/**",
+	"npm-debug.log*",
+	"out",
+	"out/**",
+	"target",
+	"target/**",
+	"tmp",
+	"tmp/**",
+	"xcuserdata",
+	"xcuserdata/**",
+	"yarn-debug.log*",
+	"yarn-error.log*",
+]
+
+[formatting]
+align_comments       = true
+align_entries        = true
+allowed_blank_lines  = 1
+array_auto_collapse  = false
+array_auto_expand    = false
+array_trailing_comma = true
+compact_arrays       = true
+indent_string        = "\t"
+reorder_arrays       = true
+reorder_keys         = true

@@ -23,39 +23,43 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        action: [clippy, fmt, nextest]
+        action: [clippy, fmt, nextest, vstyle]
     steps:
       - name: Fetch latest code
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
       - name: Setup build environment
         if: matrix.action != 'fmt'
         run: rustup show
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4
         if: matrix.action != 'fmt'
         with:
           prefix-key: ${{ env.CACHE_VERSION }}
           key: ${{ matrix.action }}
+      - name: Install cargo-make
+        uses: taiki-e/install-action@c93ccc03e00cd0e08e494f5fd058a6c55a6a1907
+        with:
+          tool: cargo-make
       - name: Cargo clippy
         if: matrix.action == 'clippy'
-        uses: giraffate/clippy-action@v1
-        with:
-          clippy_flags: --workspace --all-features --all-targets --locked
+        run: cargo make lint-rust
       - name: Cargo fmt
         if: matrix.action == 'fmt'
         run: |
           rustup toolchain install nightly
           rustup component add rustfmt --toolchain nightly
-          cargo +nightly fmt --all -- --check
+          cargo install taplo-cli --version 0.10.0 --locked
+          cargo make fmt-check
       - name: Install cargo-nextest
         if: matrix.action == 'nextest'
-        uses: taiki-e/install-action@nextest
+        uses: taiki-e/install-action@c93ccc03e00cd0e08e494f5fd058a6c55a6a1907
+        with:
+          tool: nextest
       - name: Cargo nextest
         if: matrix.action == 'nextest'
-        run: cargo nextest run --cargo-profile ci-dev --workspace --all-features --all-targets --locked
-      - name: Fast fail
-        uses: vishnudxb/cancel-workflow@v1.2
-        if: failure()
-        with:
-          repo: hack-ink/unescaper
-          workflow_id: ${{ github.run_id }}
-          access_token: ${{ github.token }}
+        run: cargo make test-rust
+      - name: Install cargo-vstyle
+        if: matrix.action == 'vstyle'
+        run: cargo install vibe-style --version 0.2.2 --locked
+      - name: Cargo vstyle
+        if: matrix.action == 'vstyle'
+        run: cargo make lint-vstyle-rust

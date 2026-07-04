@@ -86,6 +86,7 @@ fn unescape_special_symbols() {
 	unescape_assert_eq!(r"\n", "\n");
 	unescape_assert_eq!(r"\r", "\r");
 	unescape_assert_eq!(r"\t", "\t");
+	unescape_assert_eq!(r"\v", "\u{000b}");
 	unescape_assert_eq!(r"\'", "\'");
 	unescape_assert_eq!(r#"\""#, "\"");
 	unescape_assert_eq!(r"\\", "\\");

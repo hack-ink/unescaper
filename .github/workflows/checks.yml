@@ -17,6 +17,9 @@ on:
       - main
   merge_group:
 
+permissions:
+  contents: read
+
 jobs:
   cargo-checks:
     name: Task cargo ${{ matrix.action }}

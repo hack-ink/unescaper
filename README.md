@@ -20,6 +20,7 @@ fn main() {
 	assert_eq!(unescaper::unescape(r"\u{a}").unwrap(), "\n");
 	assert_eq!(unescaper::unescape(r"\x0a").unwrap(), "\n");
 	assert_eq!(unescaper::unescape(r"\12").unwrap(), "\n");
+	assert_eq!(unescaper::unescape_lossy(r"\q\n"), "\\q\n");
 }
 ```
 

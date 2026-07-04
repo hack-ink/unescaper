@@ -63,6 +63,7 @@ impl Unescaper {
 				'n' => '\n',
 				'r' => '\r',
 				't' => '\t',
+				'v' => '\u{000b}',
 				// https://github.com/hack-ink/unescaper/pull/10#issuecomment-1676443635
 				//
 				// https://www.ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf

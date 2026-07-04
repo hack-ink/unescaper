@@ -22,6 +22,7 @@ jobs:
     name: Task cargo ${{ matrix.action }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         action: [clippy, fmt, nextest, vstyle]
     steps:
@@ -39,6 +40,11 @@ jobs:
         uses: taiki-e/install-action@c93ccc03e00cd0e08e494f5fd058a6c55a6a1907
         with:
           tool: cargo-make
+      - name: Install taplo
+        if: matrix.action == 'fmt'
+        uses: taiki-e/install-action@c93ccc03e00cd0e08e494f5fd058a6c55a6a1907
+        with:
+          tool: taplo
       - name: Cargo clippy
         if: matrix.action == 'clippy'
         run: cargo make lint-rust
@@ -47,7 +53,6 @@ jobs:
         run: |
           rustup toolchain install nightly
           rustup component add rustfmt --toolchain nightly
-          cargo install taplo-cli --version 0.10.0 --locked
           cargo make fmt-check
       - name: Install cargo-nextest
         if: matrix.action == 'nextest'
@@ -59,7 +64,7 @@ jobs:
         run: cargo make test-rust
       - name: Install cargo-vstyle
         if: matrix.action == 'vstyle'
-        run: cargo install vibe-style --version 0.2.2 --locked
+        run: cargo install --git https://github.com/hack-ink/vibe-style --rev f509613696c60fbc5e444072469024888d91d88b --locked
       - name: Cargo vstyle
         if: matrix.action == 'vstyle'
         run: cargo make lint-vstyle-rust

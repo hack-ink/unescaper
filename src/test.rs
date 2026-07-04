@@ -1,7 +1,5 @@
-// std
 use std::error::Error as _;
 
-// hack-ink
 use crate::Error::{IncompleteStr, InvalidChar};
 
 macro_rules! unescape_assert_eq {

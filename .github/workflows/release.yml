@@ -24,7 +24,6 @@ jobs:
       - name: Publish
         uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b
         with:
-          discussion_category_name: Announcements
           generate_release_notes: true
 
   publish-on-crates-io:

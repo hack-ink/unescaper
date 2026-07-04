@@ -1,3 +1,9 @@
+// std
+use std::error::Error as _;
+
+// hack-ink
+use crate::Error::{IncompleteStr, InvalidChar};
+
 macro_rules! unescape_assert_eq {
 	($l:expr, $r:expr) => {
 		assert_eq!(crate::unescape($l).unwrap(), $r);
@@ -20,18 +26,11 @@ macro_rules! unescape_assert_err_str {
 }
 
 #[test]
-fn error() {
-	// std
-	use std::error::Error;
-	// hack-ink
-	use crate::Error::*;
-
+fn strict_errors() {
 	unescape_assert_err!(r"\", IncompleteStr(0));
 	unescape_assert_err!(r"\0\", IncompleteStr(2));
-
 	unescape_assert_err!(r"\{}", InvalidChar { char: '{', pos: 1 });
 	unescape_assert_err!(r"\0\{}", InvalidChar { char: '{', pos: 3 });
-
 	unescape_assert_err_str!(
 		r"\u{g}",
 		"parse int error, break at 4",
@@ -51,7 +50,6 @@ fn unescape_unicode() {
 	unescape_assert_eq!(r"\u000a", "\n");
 	unescape_assert_eq!(r"\uffff", "\u{ffff}");
 	unescape_assert_eq!(r"\u0000XavierJane", "\0XavierJane");
-
 	unescape_assert_eq!(r"\u{0}", "\0");
 	unescape_assert_eq!(r"\u{9}", "\t");
 	unescape_assert_eq!(r"\u{a}", "\n");

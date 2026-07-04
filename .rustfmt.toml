@@ -1,18 +1,18 @@
-# Basic.
+# Basic
 edition    = "2024"
 hard_tabs  = true
 max_width  = 100
 tab_spaces = 4
 
-# Import.
+# Imports
 imports_granularity = "Crate"
 reorder_imports     = true
 
-# Comments.
+# Comments
 comment_width = 100
 wrap_comments = true
 
-# Misc.
+# Misc
 format_code_in_doc_comments = true
 inline_attribute_width      = 100
 match_arm_blocks            = false

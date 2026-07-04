@@ -1,0 +1,227 @@
+# Unescaper workspace tasks.
+
+# Check
+# | task       | type      | cwd |
+# | ---------- | --------- | --- |
+# | check      | composite |     |
+# | check-rust | command   |     |
+
+[tasks.check]
+clear = true
+workspace = false
+dependencies = [
+	"check-rust",
+	"fmt-check",
+	"lint",
+	"test",
+]
+
+[tasks.check-rust]
+workspace = false
+command = "cargo"
+args = [
+	"check",
+	"--all-features",
+	"--all-targets",
+	"--locked",
+	"--workspace",
+]
+
+# Format
+# | task           | type      | cwd |
+# | -------------- | --------- | --- |
+# | fmt            | composite |     |
+# | fmt-check      | composite |     |
+# | fmt-rust       | command   |     |
+# | fmt-rust-check | extend    |     |
+# | fmt-toml       | command   |     |
+# | fmt-toml-check | extend    |     |
+
+[tasks.fmt]
+workspace = false
+dependencies = [
+	"fmt-rust",
+	"fmt-toml",
+]
+
+[tasks.fmt-check]
+workspace = false
+dependencies = [
+	"fmt-rust-check",
+	"fmt-toml-check",
+]
+
+[tasks.fmt-rust]
+workspace = false
+command = "rustup"
+args = [
+	"run",
+	"nightly",
+	"cargo",
+	"fmt",
+	"--all",
+]
+
+[tasks.fmt-rust-check]
+extend = "fmt-rust"
+args = [
+	"run",
+	"nightly",
+	"cargo",
+	"fmt",
+	"--all",
+	"--",
+	"--check",
+]
+
+[tasks.fmt-toml]
+workspace = false
+command = "taplo"
+args = [
+	"fmt",
+]
+
+[tasks.fmt-toml-check]
+extend = "fmt-toml"
+args = [
+	"fmt",
+	"--check",
+]
+
+# Lint
+# | task             | type      | cwd |
+# | ---------------- | --------- | --- |
+# | lint             | composite |     |
+# | lint-rust        | command   |     |
+# | lint-vstyle-rust | command   |     |
+
+[tasks.lint]
+workspace = false
+dependencies = [
+	"lint-rust",
+	"lint-vstyle-rust",
+]
+
+[tasks.lint-rust]
+workspace = false
+command = "cargo"
+args = [
+	"clippy",
+	"--all-features",
+	"--all-targets",
+	"--locked",
+	"--workspace",
+	"--",
+	"-D",
+	"clippy::all",
+	"-D",
+	"clippy::too_many_lines",
+	"-D",
+	"clippy::unwrap_used",
+	"-D",
+	"clippy::use_self",
+	"-D",
+	"clippy::wildcard_imports",
+	"-D",
+	"missing-docs",
+	"-D",
+	"unused-crate-dependencies",
+	"-D",
+	"warnings",
+]
+
+[tasks.lint-vstyle-rust]
+workspace = false
+command = "cargo"
+args = [
+	"vstyle",
+	"curate",
+	"--language",
+	"rust",
+	"--workspace",
+	"--all-features",
+]
+
+# Fix
+# | task            | type      | cwd |
+# | --------------- | --------- | --- |
+# | lint-fix        | composite |     |
+# | lint-rust-fix   | command   |     |
+# | lint-vstyle-fix | command   |     |
+
+[tasks.lint-fix]
+workspace = false
+dependencies = [
+	"lint-rust-fix",
+	"lint-vstyle-fix",
+]
+
+[tasks.lint-rust-fix]
+workspace = false
+command = "cargo"
+args = [
+	"clippy",
+	"--fix",
+	"--allow-dirty",
+	"--all-features",
+	"--all-targets",
+	"--locked",
+	"--workspace",
+	"--",
+	"-D",
+	"clippy::all",
+	"-D",
+	"clippy::too_many_lines",
+	"-D",
+	"clippy::unwrap_used",
+	"-D",
+	"clippy::use_self",
+	"-D",
+	"clippy::wildcard_imports",
+	"-D",
+	"missing-docs",
+	"-D",
+	"unused-crate-dependencies",
+	"-D",
+	"warnings",
+]
+
+[tasks.lint-vstyle-fix]
+workspace = false
+command = "cargo"
+args = [
+	"vstyle",
+	"tune",
+	"--language",
+	"rust",
+	"--workspace",
+	"--all-features",
+	"--strict",
+]
+
+# Test
+# | task      | type      | cwd |
+# | --------- | --------- | --- |
+# | test      | composite |     |
+# | test-rust | command   |     |
+
+[tasks.test]
+clear = true
+workspace = false
+dependencies = [
+	"test-rust",
+]
+
+[tasks.test-rust]
+workspace = false
+command = "cargo"
+args = [
+	"nextest",
+	"run",
+	"--all-features",
+	"--all-targets",
+	"--cargo-profile",
+	"ci-dev",
+	"--locked",
+	"--workspace",
+]

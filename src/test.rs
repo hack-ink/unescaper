@@ -92,3 +92,18 @@ fn unescape_special_symbols() {
 	unescape_assert_eq!(r"\\", "\\");
 	unescape_assert_eq!(r"//", "//");
 }
+
+#[test]
+fn unescape_lossy() {
+	assert_eq!(crate::unescape_lossy(r"a\nb"), "a\nb");
+	assert_eq!(crate::unescape_lossy(r"a\qb\nc"), "a\\qb\nc");
+	assert_eq!(crate::unescape_lossy(r"\u{g}\n"), "\\u{g}\n");
+	assert_eq!(crate::unescape_lossy(r"\u{110000}\n"), "\\u{110000}\n");
+	assert_eq!(crate::unescape_lossy(r"\u{a"), "\n");
+	assert_eq!(crate::unescape_lossy(r"\u{1F600"), "😀");
+	assert_eq!(crate::unescape_lossy(r"\u{12\n"), "\\u{12\n");
+	assert_eq!(crate::unescape_lossy(r"\u12\n"), "\\u12\n");
+	assert_eq!(crate::unescape_lossy(r"\x0a\xzz"), "\n\\xzz");
+	assert_eq!(crate::unescape_lossy(r"abc\"), "abc\\");
+	assert_eq!(crate::unescape_lossy(r"\377"), "\u{00ff}");
+}

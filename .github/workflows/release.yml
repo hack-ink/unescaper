@@ -1,6 +1,8 @@
 name: Release
 
 env:
+  CACHE_VERSION: 0
+
   CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
   CARGO_TERM_COLOR: always
 
@@ -15,8 +17,60 @@ permissions:
   contents: read
 
 jobs:
+  cargo-checks:
+    name: Task cargo ${{ matrix.action }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        action: [clippy, fmt, nextest, vstyle]
+    steps:
+      - name: Fetch latest code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+      - name: Setup build environment
+        if: matrix.action != 'fmt'
+        run: rustup show
+      - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4
+        if: matrix.action != 'fmt'
+        with:
+          prefix-key: release-${{ env.CACHE_VERSION }}
+          key: ${{ matrix.action }}
+      - name: Install cargo-make
+        uses: taiki-e/install-action@c93ccc03e00cd0e08e494f5fd058a6c55a6a1907
+        with:
+          tool: cargo-make
+      - name: Install taplo
+        if: matrix.action == 'fmt'
+        uses: taiki-e/install-action@c93ccc03e00cd0e08e494f5fd058a6c55a6a1907
+        with:
+          tool: taplo
+      - name: Cargo clippy
+        if: matrix.action == 'clippy'
+        run: cargo make lint-rust
+      - name: Cargo fmt
+        if: matrix.action == 'fmt'
+        run: |
+          rustup toolchain install nightly
+          rustup component add rustfmt --toolchain nightly
+          cargo make fmt-check
+      - name: Install cargo-nextest
+        if: matrix.action == 'nextest'
+        uses: taiki-e/install-action@c93ccc03e00cd0e08e494f5fd058a6c55a6a1907
+        with:
+          tool: nextest
+      - name: Cargo nextest
+        if: matrix.action == 'nextest'
+        run: cargo make test-rust
+      - name: Install cargo-vstyle
+        if: matrix.action == 'vstyle'
+        run: cargo install --git https://github.com/hack-ink/vibe-style --rev f509613696c60fbc5e444072469024888d91d88b --locked
+      - name: Cargo vstyle
+        if: matrix.action == 'vstyle'
+        run: cargo make lint-vstyle-rust
+
   release:
     name: Release
+    needs: publish-on-crates-io
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -28,6 +82,7 @@ jobs:
 
   publish-on-crates-io:
     name: Publish on crates.io
+    needs: cargo-checks
     runs-on: ubuntu-latest
     steps:
       - name: Fetch latest code

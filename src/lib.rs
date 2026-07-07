@@ -1,24 +1,41 @@
 #![warn(missing_docs)]
 
-//! Unescape the given string.
-//! This is the opposite operation of [`std::ascii::escape_default`].
+//! Unescape strings with escape sequences written out as literal characters.
+//!
+//! Supports common control escapes, quotes, backslashes, solidus, Unicode, byte, and octal escapes.
 
 use std::num::ParseIntError;
 
 /// Unescaper's `Result`.
 pub type Result<T> = ::std::result::Result<T, Error>;
 
-/// Unescaper's `Error`.
-#[allow(missing_docs)]
+/// Unescaper's error.
+///
+/// Position fields are zero-based parser break positions in the original input. Incomplete and
+/// numeric escape failures may point to the end of an escape sequence rather than the exact
+/// invalid digit.
 #[cfg_attr(test, derive(PartialEq, Eq))]
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
+	/// The input ended before the escape sequence completed.
 	#[error("incomplete str, break at {0}")]
 	IncompleteStr(usize),
+	/// The escape sequence resolved to an invalid character.
 	#[error("invalid char, {char:?} break at {pos}")]
-	InvalidChar { char: char, pos: usize },
+	InvalidChar {
+		/// Invalid character or the last character from an invalid numeric escape payload.
+		char: char,
+		/// Zero-based parser break position.
+		pos: usize,
+	},
+	/// The numeric escape payload could not be parsed.
 	#[error("parse int error, break at {pos}")]
-	ParseIntError { source: ParseIntError, pos: usize },
+	ParseIntError {
+		/// Integer parsing failure from the numeric escape payload.
+		source: ParseIntError,
+		/// Zero-based parser break position.
+		pos: usize,
+	},
 }
 
 enum LossyEscape {
@@ -26,7 +43,7 @@ enum LossyEscape {
 	Literal(usize),
 }
 
-/// Unescaper struct which holding the chars cache for unescaping.
+/// Stateful unescaper that owns a reversed character cache.
 #[derive(Debug)]
 pub struct Unescaper {
 	/// [`str`] cache, in reverse order.
@@ -91,12 +108,20 @@ impl Unescaper {
 
 		// \u + { + regex(d*) + }
 		if c == '{' {
+			let mut closed = false;
+
 			while let Some(n) = self.chars.pop() {
 				if n == '}' {
+					closed = true;
+
 					break;
 				}
 
 				unicode.push(n);
+			}
+
+			if !closed {
+				Err(Error::IncompleteStr(0))?;
 			}
 		} else {
 			// [0, 65536), 16^4
@@ -249,18 +274,7 @@ fn parse_lossy_unicode_escape(s: &str, after_marker: usize) -> LossyEscape {
 				.map_or(LossyEscape::Literal(len), |char| LossyEscape::Escaped { char, len });
 		}
 
-		let len = incomplete_braced_unicode_escape_len(s, digits_start);
-
-		if len == s.len() {
-			let digits = &s[digits_start..];
-
-			return u32::from_str_radix(digits, 16)
-				.ok()
-				.and_then(char::from_u32)
-				.map_or(LossyEscape::Literal(len), |char| LossyEscape::Escaped { char, len });
-		}
-
-		return LossyEscape::Literal(len);
+		return LossyEscape::Literal(incomplete_braced_unicode_escape_len(s, digits_start));
 	}
 
 	let Some((digits, len)) = fixed_width_escape_digits(&s[after_marker..], 4) else {

@@ -15,8 +15,6 @@ Unescape strings with escape sequences written out as literal characters.
 
 ## Usage
 
-[More Examples](src/test.rs)
-
 ```rust
 fn main() {
 	assert_eq!(unescaper::unescape(r"\u000a").unwrap(), "\n");
@@ -26,6 +24,19 @@ fn main() {
 	assert_eq!(unescaper::unescape_lossy(r"\q\n"), "\\q\n");
 }
 ```
+
+Supported escapes:
+
+| Escape | Output |
+| --- | --- |
+| `\b`, `\f`, `\n`, `\r`, `\t`, `\v` | ASCII control characters |
+| `\'`, `\"`, `\\`, `\/` | Literal quote, backslash, or slash |
+| `\u000a`, `\u{a}` | Unicode scalar values |
+| `\x0a` | Byte values |
+| `\12` | Octal byte values |
+
+`unescape` returns an error for malformed escapes. `unescape_lossy` decodes valid escapes and
+preserves malformed escapes as written.
 
 ## Support Me
 

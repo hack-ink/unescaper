@@ -36,12 +36,12 @@ jobs:
           prefix-key: release-${{ env.CACHE_VERSION }}
           key: ${{ matrix.action }}
       - name: Install cargo-make
-        uses: taiki-e/install-action@50414676f9f5d50a65992c6dd2ed02641263226c
+        uses: taiki-e/install-action@7572810d7dd469b651bb7793945692cf78da5dd7
         with:
           tool: cargo-make
       - name: Install taplo
         if: matrix.action == 'fmt'
-        uses: taiki-e/install-action@50414676f9f5d50a65992c6dd2ed02641263226c
+        uses: taiki-e/install-action@7572810d7dd469b651bb7793945692cf78da5dd7
         with:
           tool: taplo
       - name: Cargo clippy
@@ -55,7 +55,7 @@ jobs:
           cargo make fmt-check
       - name: Install cargo-nextest
         if: matrix.action == 'nextest'
-        uses: taiki-e/install-action@50414676f9f5d50a65992c6dd2ed02641263226c
+        uses: taiki-e/install-action@7572810d7dd469b651bb7793945692cf78da5dd7
         with:
           tool: nextest
       - name: Cargo nextest
